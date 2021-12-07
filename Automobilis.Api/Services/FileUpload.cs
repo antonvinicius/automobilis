@@ -5,6 +5,12 @@ namespace Automobilis.Api.Services
 {
     public class FileUpload
     {
+        private readonly IConfiguration _configuration;
+
+        public FileUpload(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public string UploadBase64Image(string base64Image, string container)
         {
             // Gera um nome randomico para imagem
@@ -17,7 +23,7 @@ namespace Automobilis.Api.Services
             byte[] imageBytes = Convert.FromBase64String(data);
 
             // Define o BLOB no qual a imagem será armazenada
-            var blobClient = new BlobClient("DefaultEndpointsProtocol=https;AccountName=sapiensstorage;AccountKey=aCWtC2IUw9Gva1sUCzQap7gAyP32E7gr/jGAQB2PjCm13A4uqSW00as5zZLrGE+H4lIK5JEj8dnIcrcB+pjvMw==;EndpointSuffix=core.windows.net", container, fileName);
+            var blobClient = new BlobClient(_configuration.GetSection("azureStorage").Value, container, fileName);
 
             // Envia a imagem
             using (var stream = new MemoryStream(imageBytes))

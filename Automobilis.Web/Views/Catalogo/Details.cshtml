@@ -10,7 +10,7 @@
 }
 
 <div class="banner">
-    @if (Model.Picture != null && Model.Picture != "")
+    @if (Model.Picture != "")
     {
         <img src="@Model.Picture" />
     }else
@@ -75,6 +75,6 @@
 </div>
 
 <div class="btn_group">
-    <button class="btn_action_1 poppins700 fs-32">@Model.Price.Value.ToString("C3", CultureInfo.CurrentCulture)</button>
+    <button class="btn_action_1 poppins700 fs-32">@Model.Price.ToString("C3", CultureInfo.CurrentCulture)</button>
     <button class="btn_action_2 poppins700 fs-32">Comprar</button>
 </div>

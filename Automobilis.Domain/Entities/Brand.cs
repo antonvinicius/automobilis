@@ -1,4 +1,6 @@
-﻿namespace Automobilis.Domain.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Automobilis.Domain.Entities
 {
     public class Brand
     {
@@ -12,6 +14,7 @@
         public string Name { get; set; }
         public string Picture { get; set; }
 
+        [JsonIgnore]
         public ICollection<Car>? Cars { get; set; }
     }
 }

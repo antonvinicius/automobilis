@@ -33,12 +33,12 @@ namespace Automobilis.Infra.Repositories
 
         public async Task<IEnumerable<Car>> GetAll()
         {
-            return await _context.Cars!.ToListAsync();
+            return await _context.Cars!.Include(x => x.Brand).ToListAsync();
         }
 
         public async Task<Car> GetById(int carId)
         {
-            return await _context.Cars.FirstOrDefaultAsync(x => x.Id == carId);
+            return await _context.Cars.Include(x => x.Brand).FirstOrDefaultAsync(x => x.Id == carId);
         }
 
         public async Task<bool> Save(Car car)

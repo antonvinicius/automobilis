@@ -1,5 +1,5 @@
-﻿using Automobilis.Api.Commands;
-using Automobilis.Api.Handlers;
+﻿using Automobilis.Api.Handlers;
+using Automobilis.Domain.Commands;
 using Automobilis.Domain.Entities;
 using Automobilis.Domain.Repositories;
 using Automobilis.Domain.Results;
@@ -13,10 +13,12 @@ namespace Automobilis.Api.Controllers
     public class CarsController : ControllerBase
     {
         private readonly ICarRepository _repository;
+        private readonly CarHandler _handler;
 
-        public CarsController(ICarRepository repository)
+        public CarsController(ICarRepository repository, CarHandler handler)
         {
             _repository = repository;
+            _handler = handler;
         }
 
         [HttpGet]
@@ -25,16 +27,22 @@ namespace Automobilis.Api.Controllers
             return await _repository.GetAll();
         }
 
-        [HttpPost]
-        public async Task<GenericResult> AlterCarAsync(AlterCarCommand alterCarCommand, [FromServices] CarHandler handler)
+        [HttpGet("{id:int}")]
+        public async Task<Car> GetCarsAsync(int id)
         {
-            return await handler.Handle(alterCarCommand);
+            return await _repository.GetById(id);
         }
 
-        [HttpDelete]
-        public async Task<bool> DeleteCarAsync(DeleteCarCommand command)
+        [HttpPost]
+        public async Task<GenericResult> AlterCarAsync(AlterCarCommand alterCarCommand)
         {
-            await _repository.Delete(command.CarId);
+            return await _handler.Handle(alterCarCommand);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<bool> DeleteCarAsync(int id)
+        {
+            await _repository.Delete(id);
             return true;
         }
     }

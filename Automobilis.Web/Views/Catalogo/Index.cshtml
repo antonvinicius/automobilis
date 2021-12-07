@@ -18,7 +18,7 @@
             <div class="car_card">
                 <div class="car_card_header">
                     <div class="car_card_picture">
-                        @if (car.Picture != null && car.Picture != "")
+                        @if (car.Picture != "")
                         {
                             <img src="@car.Picture">
                         }
@@ -39,7 +39,7 @@
                             <p class="delimiter fs-14 color-text poppins400">|</p>
                             <p class="fs-14 color-text poppins400" id="fab-year">@car.FabYear</p>
                         </div>
-                        <h1 class="poppins700 fs-24">@car.Price.Value.ToString("C2", CultureInfo.CurrentCulture)</h1>
+                        <h1 class="poppins700 fs-24">@car.Price.ToString("C2", CultureInfo.CurrentCulture)</h1>
                     </div>
                 </div>
                 <div class="car_card_footer">

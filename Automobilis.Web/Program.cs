@@ -1,15 +1,17 @@
-﻿using Automobilis.Web.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Automobilis.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AutomobilisWebContext>(options =>
-
-    options.UseSqlite(builder.Configuration.GetConnectionString("AutomobilisWebContext")));
-
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<DataService>();
+
+builder.Services.AddScoped(s =>
+{
+    var client = new HttpClient(new HttpClientHandler { UseCookies = false });
+    return client;
+});
+
+builder.Services.AddScoped<BrandService>();
+builder.Services.AddScoped<CarService>();
 
 var app = builder.Build();
 

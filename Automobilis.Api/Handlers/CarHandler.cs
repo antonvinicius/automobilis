@@ -1,5 +1,5 @@
-﻿using Automobilis.Api.Commands;
-using Automobilis.Api.Services;
+﻿using Automobilis.Api.Services;
+using Automobilis.Domain.Commands;
 using Automobilis.Domain.Entities;
 using Automobilis.Domain.Handlers;
 using Automobilis.Domain.Repositories;
@@ -10,15 +10,17 @@ namespace Automobilis.Api.Handlers
     public class CarHandler : IHandler<AlterCarCommand>
     {
         private readonly ICarRepository _repository;
+        private readonly IConfiguration _configuration;
 
-        public CarHandler(ICarRepository repository)
+        public CarHandler(ICarRepository repository, IConfiguration configuration)
         {
             _repository = repository;
+            _configuration = configuration;
         }
 
         public async Task<GenericResult> Handle(AlterCarCommand command)
         {
-            var fileUp = new FileUpload();
+            var fileUp = new FileUpload(_configuration);
 
             if (command.Picture != null && command.CarId != 0)
             {
@@ -32,6 +34,10 @@ namespace Automobilis.Api.Handlers
             {
                 var commandPic = fileUp.UploadBase64Image(command.Picture, "automobilis");
                 command.Picture = commandPic;
+            }
+            else if (command.CarId == 0 && command.Picture == null)
+            {
+                command.Picture = "";
             }
 
             command.Price = command.Price / 100;

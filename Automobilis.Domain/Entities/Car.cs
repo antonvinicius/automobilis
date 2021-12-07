@@ -4,6 +4,10 @@ namespace Automobilis.Domain.Entities
 {
     public class Car
     {
+        public Car()
+        {
+
+        }
         public Car(int brandId, string model, int fabYear, int modelYear, double price, string description, string? picture)
         {
             BrandId = brandId;

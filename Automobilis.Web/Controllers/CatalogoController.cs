@@ -1,32 +1,20 @@
-﻿using Automobilis.Web.Data;
-using Automobilis.Web.Models;
+﻿using Automobilis.Web.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace Automobilis.Web.Controllers
 {
     public class CatalogoController : Controller
     {
-        private readonly DataService _dataService;
-
-        public CatalogoController(DataService dataService)
+        public async Task<IActionResult> Index([FromServices] CarService service)
         {
-            _dataService = dataService;
-        }
-        public IActionResult Index()
-        {
-            return View(_dataService.GetCars());
+            var cars = await service.GetCarsAsync();
+            return View(cars);
         }
 
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details([FromServices] CarService service, int id)
         {
-            return View(_dataService.GetById(id));
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var car = await service.GetByIdAsync(id);
+            return View(car);
         }
     }
 }

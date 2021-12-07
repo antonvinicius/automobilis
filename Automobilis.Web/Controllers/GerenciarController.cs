@@ -1,5 +1,5 @@
-﻿using Automobilis.Web.Data;
-using Automobilis.Web.Models;
+﻿using Automobilis.Domain.Commands;
+using Automobilis.Domain.Entities;
 using Automobilis.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,71 +7,63 @@ namespace Automobilis.Web.Controllers
 {
     public class GerenciarController : Controller
     {
-        private readonly DataService _dataService;
+        private readonly CarService _carService;
+        private readonly BrandService _brandService;
 
-        public GerenciarController(DataService dataService)
+        public GerenciarController([FromServices] CarService carService, [FromServices] BrandService brandService)
         {
-            _dataService = dataService;
-        }
-        public IActionResult Index()
-        {
-            return View(_dataService.GetCars());
+            _carService = carService;
+            _brandService = brandService;
         }
 
-        public IActionResult Add(int id)
+        public async Task<IActionResult> Index()
         {
-            ViewBag.BrandList = _dataService.GetBrands();
+            var cars = await _carService.GetCarsAsync();
+            return View(cars);
+        }
+
+        public async Task<IActionResult> Add(int id)
+        {
+            ViewBag.BrandList = await _brandService.GetBrandsAsync();
             if (id == 0)
                 return View(new Car());
             else
-                return View(_dataService.GetById(id));
+                return View(await _carService.GetByIdAsync(id));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddCar(Car car)
+        public async Task<IActionResult> AddCar(Car car)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.BrandList = _dataService.GetBrands();
+                ViewBag.BrandList = await _brandService.GetBrandsAsync();
 
                 if (car.Id == 0)
                     return View("Add",new Car());
                 else
-                    return View("Add",_dataService.GetById(car.Id));
+                    return View("Add", await _carService.GetByIdAsync(car.Id));
             }
 
-            var fileUp = new FileUpload();
-            
-            if(car.Picture != null && car.Id != 0)
-            {
-                if (car.Id != 0 && !car.Picture.Contains("http"))
-                {
-                    var carPic = fileUp.UploadBase64Image(car.Picture, "automobilis");
-                    car.Picture = carPic;
-                }
-                else if (car.Id == 0 && car.Picture != null)
-                {
-                    var carPic = fileUp.UploadBase64Image(car.Picture, "automobilis");
-                    car.Picture = carPic;
-                }
-            }
+            var command = new AlterCarCommand(
+                car.Id,
+                car.BrandId,
+                car.Model,
+                car.FabYear,
+                car.ModelYear,
+                car.Price,
+                car.Description,
+                car.Picture);
 
-            car.Price = car.Price / 100;
-
-            if (car.Id == 0)
-                _dataService.Save(car);
-            else
-                _dataService.Update(car);
-
+            await _carService.AlterCarAsync(command);
 
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _dataService.DeleteCar(id);
+            await _carService.DeleteCarAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }
