@@ -1,0 +1,80 @@
+﻿@using System.Globalization
+@model Car
+
+@{
+    ViewData["Title"] = "Catálogo";
+}
+
+@section Styles {
+<link href="~/css/Details/style.css" rel="stylesheet" />
+}
+
+<div class="banner">
+    @if (Model.Picture != null && Model.Picture != "")
+    {
+        <img src="@Model.Picture" />
+    }else
+    {
+        <div class="no-pic">
+            <img src="~/assets/images/no-pic.png" />
+        </div>
+    }
+</div>
+<div class="banner_description">
+    <div class="car_title">
+        <p class="poppins400 fs-32"><b class="poppins700 fs-32">@Model.Brand.Name</b> @Model.Model</p>
+    </div>
+    <img src="@Model.Brand.Picture" />
+</div>
+
+<div class="card_info">
+    <div class="card_info_title">
+        <img src="~/assets/icons/info.svg" />
+        <h1 class="poppins700">Detalhes do automóvel</h1>
+    </div>
+    <div class="card_info_body">
+        <div class="card_info_body_item">
+            <div class="item_info">
+                <img src="~/assets/icons/flag.svg" />
+                <h2 class="poppins400 fs-24">Marca</h2>
+            </div>
+            <p class="poppins400 fs-24">@Model.Brand.Name</p>
+        </div>
+        <div class="card_info_body_item">
+            <div class="item_info">
+                <img src="~/assets/icons/package.svg" />
+                <h2 class="poppins400 fs-24">Modelo</h2>
+            </div>
+            <p class="poppins400 fs-24">@Model.Model</p>
+        </div>
+        <div class="card_info_body_item">
+            <div class="item_info">
+                <img src="~/assets/icons/truck.svg" />
+                <h2 class="poppins400 fs-24">Ano de fabricação</h2>
+            </div>
+            <p class="poppins400 fs-24">@Model.FabYear</p>
+        </div>
+        <div class="card_info_body_item">
+            <div class="item_info">
+                <img src="~/assets/icons/tag.svg" />
+                <h2 class="poppins400 fs-24">Ano do modelo</h2>
+            </div>
+            <p class="poppins400 fs-24">@Model.ModelYear</p>
+        </div>
+    </div>
+</div>
+
+<div class="card_info">
+    <div class="card_info_title">
+        <img src="~/assets/icons/info.svg" />
+        <h1 class="poppins700">Descrição</h1>
+    </div>
+    <div class="card_info_body">
+        <p class="poppins400 fs-24">@Model.Description</p>
+    </div>
+</div>
+
+<div class="btn_group">
+    <button class="btn_action_1 poppins700 fs-32">@Model.Price.Value.ToString("C3", CultureInfo.CurrentCulture)</button>
+    <button class="btn_action_2 poppins700 fs-32">Comprar</button>
+</div>

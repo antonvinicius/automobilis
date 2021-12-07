@@ -1,0 +1,228 @@
+﻿@model Automobilis.Web.Models.Car
+
+@{
+    ViewData["Title"] = "Adicionar";
+    var emptyModel = Model.Id == 0 ? "1" : "0";
+}
+
+@section Styles {
+<link href="~/css/Adicionar/style.css" rel="stylesheet" />
+}
+
+<div class="container">
+    <div class="container_menu mt-20">
+        <h1 class="poppins700 fs-32">Novo carro</h1>
+        <a asp-action="Index">
+            <img src="~/assets/icons/arrow-left.svg" />
+        </a>
+    </div>
+
+    <div class="form_container">
+        <form asp-action="AddCar" onsubmit="Submit(event)">
+            <input type="hidden" name="empty-model" id="empty-model" value="@emptyModel"/>
+            <input type="hidden" asp-for="Id"/>
+            <div class="form_item d-flex justify-between align-center pressable" id="brand_container" onclick="ToggleDropDown()">
+                @if (Model.Brand == null)
+                {
+                    <h1 class="poppins700 fs-32">Marca</h1>
+                    <input type="hidden" asp-for="BrandId"/>
+                    <span asp-validation-for="BrandId"></span>
+                    <img src="~/assets/icons/arrow-down-circle.svg" />
+                }
+                else
+                {
+                    <h1 class="poppins700 fs-32">@Model.Brand.Name</h1>
+                    <input type="hidden" asp-for="BrandId"/>
+                    <span asp-validation-for="BrandId"></span>
+                    <img src="@Model.Brand.Picture" width="85" />
+                }
+            </div>
+
+            <div class="form_dropdown" id="dropdown">
+                <div class="search_container">
+                    <input type="text" class="form_dropdown_search" id="search" placeholder="Digite para buscar..." />
+                </div>
+
+                <ul>
+                    @foreach (var brand in @ViewBag.BrandList)
+                    {
+                        <li class="d-flex justify-between align-center" id="@brand.Id" onclick="UpdateBrand(this)">
+                            <span class="invisible">@brand.Id</span>
+                            <h1 class="poppins700 fs-32 name">@brand.Name</h1>
+                            <img src="@brand.Picture" />
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div class="form_item d-flex justify-between align-center">
+                <input type="text" placeholder="Modelo" asp-for="Model" />
+                <span asp-validation-for="Model"></span>
+            </div>
+
+            <div class="form_item d-flex justify-between align-center">
+                <input type="number" placeholder="Ano de fabricação" asp-for="FabYear" />
+                <span asp-validation-for="FabYear"></span>
+            </div>
+
+            <div class="form_item d-flex justify-between align-center">
+                <input type="number" placeholder="Ano do modelo" asp-for="ModelYear" />
+                <span asp-validation-for="ModelYear"></span>
+            </div>
+
+            <div class="form_item d-flex justify-between align-center">
+                <input type="text" placeholder="R$ 0.000,00" asp-for="Price" oninput="FormatCurrency(this)"/>
+                <span asp-validation-for="Price"></span>
+            </div>
+
+            <div class="form_item d-flex justify-between align-center">
+                <textarea placeholder="Descrição" asp-for="Description" rows="30" class="description"></textarea>
+                <span asp-validation-for="Description"></span>
+            </div>
+
+            <div class="form_item d-flex justify-between align-center">
+                <label id="pic" for="temp-pic">
+                    <div id="file_input" class="file_input">Foto do automóvel</div>
+                    <input type="file" accept="image/png, image/jpeg" id="temp-pic">   
+                    <input type="hidden" asp-for="Picture"/>
+                </label>
+                <img src="~/assets/icons/file-plus.svg"/>
+            </div>
+            <div style="text-align: center">
+                @if (Model.Picture != null && Model.Picture != "")
+                {
+                    <img id="pic_temp" src="@Model.Picture"/>
+                }else
+                {
+                    <img id="pic_temp"/>
+                }
+            </div>
+
+            <button class="submit_btn poppins700 fs-32" type="submit">Cadastrar</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+
+    if (document.getElementById("empty-model").value == 1) {
+        document.querySelector("form").reset()
+        document.getElementById("FabYear").value = "";
+        document.getElementById("ModelYear").value = "";
+        document.getElementById("Price").value = "";
+    }
+
+    if (document.querySelector("span[data-valmsg-for='BrandId']").innerHTML != ''){
+            document.getElementById("BrandId").parentElement.classList.add("invalid")
+    }
+    if (document.querySelector("span[data-valmsg-for='FabYear']").innerHTML != ''){
+            document.getElementById("FabYear").parentElement.classList.add("invalid")
+    }
+    if (document.querySelector("span[data-valmsg-for='Model']").innerHTML != ''){
+            document.getElementById("Model").parentElement.classList.add("invalid")
+    }
+    if (document.querySelector("span[data-valmsg-for='ModelYear']").innerHTML != ''){
+            document.getElementById("ModelYear").parentElement.classList.add("invalid")
+    }
+    if (document.querySelector("span[data-valmsg-for='Price']").innerHTML != ''){
+            document.getElementById("Price").parentElement.classList.add("invalid")
+    }
+    if (document.querySelector("span[data-valmsg-for='Description']").innerHTML != ''){
+            document.getElementById("Description").parentElement.classList.add("invalid")
+    }
+
+    function Submit(e) {
+        e.preventDefault()
+        
+        let price = document.getElementById("Price")
+        let tempPic = document.getElementById("temp-pic")
+        let pic = document.getElementById("Picture")
+        price.value = price.value.replace("R$", '')
+        price.value = price.value.replaceAll('.', '')
+        price.value = price.value.replace(',', '')
+        price.value = +price.value
+
+        var file = tempPic.files[0];
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            // Todo
+            pic.value = reader.result
+            document.getElementsByTagName("form")[0].submit()
+        }
+        if (file) {
+            reader.readAsDataURL(file);
+        }else {
+            document.getElementsByTagName("form")[0].submit()
+        }
+    }
+
+    var input = document.getElementById('search');
+    input.onkeyup = function () {
+        var filter = input.value.toUpperCase();
+        var lis = document.getElementsByTagName('li');
+        for (var i = 0; i < lis.length; i++) {
+            var name = lis[i].getElementsByClassName('name')[0].innerHTML;
+            if (name.toUpperCase().indexOf(filter) == 0)
+                lis[i].style.display = 'flex';
+            else
+                lis[i].style.display = 'none';
+        }
+    }
+
+    function ToggleDropDown() {
+        document.getElementById("dropdown").classList.toggle("visible")
+
+        document.getElementById("search").focus()
+    }
+
+    function UpdateBrand(element) {
+        document.getElementById("brand_container").innerHTML = `
+        <h1 class="poppins700 fs-32">${element.children[1].innerHTML}</h1>
+        <img src="${element.children[2].src}" />
+        <input type="hidden" name="BrandId" id="BrandId" value=${element.children[0].innerHTML} />
+        `
+        document.getElementById("brand_container").classList.add("activated")
+        ToggleDropDown()
+        document.getElementById("Model").focus()
+    }
+
+    function FormatCurrency(element) {
+
+        var formato = { minimumFractionDigits: 2 , style: 'currency', currency: 'BRL' }
+        let cleanValue = element.value.replace("R$", '').replace(",", '').replace(".", '')
+
+        cleanValue = cleanValue.replace(".", "")
+
+        let val = +cleanValue/100
+        element.value = val.toLocaleString("pt-BR", formato)
+    }
+
+    var fileInput = document.querySelector('input[type=file]'); 
+
+    fileInput.addEventListener('change', function() {
+        var file = document.getElementById("temp-pic")
+        var fileName = document.getElementById("temp-pic").value;
+        var idxDot = fileName.lastIndexOf(".") + 1;
+        var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+        if ((extFile=="jpg" || extFile=="jpeg" || extFile=="png") && file.files[0].size < 5242880){
+            readURL(document.getElementById("temp-pic"))
+        }else{
+            $("#temp-pic").val("")
+            alert("Tamanho máximo da imagem 5MB. Formatos aceitos: .jpg, .jpeg e .png")
+        }
+    });
+
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('#pic_temp')
+            .attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+</script>
+}
+

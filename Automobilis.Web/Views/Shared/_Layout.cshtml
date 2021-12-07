@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Automobilis</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Layout/style.css" />
+    <link rel=icon href="~/assets/images/logo_1.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <header>
+        <div class="menuWrapper">
+            <a asp-controller="Catalogo" asp-action="Index">
+                <img id="logo" src="~/assets/images/logo_2.png" class="logo" />
+            </a>
+            <nav>
+                <a asp-controller="Catalogo" asp-action="Index">
+                    <p class="menuItem poppins700 fs-24 @(ViewContext.RouteData.Values["Controller"].ToString() == "Catalogo" ? "active" : "")">Catálogo</p>
+                </a>
+                <a asp-controller="Gerenciar" asp-action="Index">
+                    <p class="menuItem poppins700 fs-24 @(ViewContext.RouteData.Values["Controller"].ToString() == "Gerenciar" ? "active" : "")">Gerenciar</p>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

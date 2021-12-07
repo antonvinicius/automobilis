@@ -1,0 +1,85 @@
+﻿.manage_table {
+    margin-top: 60px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+th {
+    text-align: left;
+    padding-left: 36px;
+}
+
+.manage_table tbody tr td {
+    padding: 23px 36px;
+}
+
+.manage_table tr:nth-child(2n+1) td {
+    background-color: var(--background-shape);
+}
+
+.action {
+    padding: 0 !important;
+    padding-right: 36px;
+}
+.action img:first-child {
+    margin-right: 47px;
+}
+.action img {
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+}
+.action img:hover {
+    transform: scale(1.2);
+}
+.car_brand img {
+    width: 82px;
+}
+
+.full_screen_dialog {
+    display: none;
+}
+
+.exclude_confirm {
+    position: fixed;
+    top: 0;
+
+    width: 100vw;
+    height: 100vh;
+    background: rgba(68,68,68,0.5);
+    
+    display: flex;
+    align-items:center;
+    justify-content: center;
+}
+
+.exclude_confirm_modal {
+    width: 694px;
+    height: 329px;
+    background-color: var(--primary);
+    padding:24px 34px;
+    border-radius: 10px;
+}
+
+.btn_exclude {
+    margin-top: 19px;
+    width: 265px;
+    height: 73px;
+    border-radius: 10px;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+.btn_group{
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn_exclude_confirmation {
+    background-color: var(--attention);
+}
+
+.btn_exclude_cancel {
+    background-color: var(--secondary);
+}

@@ -1,0 +1,56 @@
+﻿@using System.Globalization
+@model List<Car>
+
+@{
+    ViewData["Title"] = "Catálogo";
+}
+
+@section Styles {
+<link href="~/css/Catalogo/style.css" rel="stylesheet" />
+}
+
+<div class="container">
+    <h1 class="title poppins700 fs-32">Nossos Carros</h1>
+
+    <div class="cards_container">
+        @foreach (var car in Model)
+        {
+            <div class="car_card">
+                <div class="car_card_header">
+                    <div class="car_card_picture">
+                        @if (car.Picture != null && car.Picture != "")
+                        {
+                            <img src="@car.Picture">
+                        }
+                        else
+                        {
+                            <div class="no-pic">
+                                <img src="~/assets/images/no-pic.png">
+                            </div>
+                        }
+                    </div>
+                    <img class="car_logo" src="@car.Brand.Picture" />
+                    <div class="car_card_info">
+                        <h1 class="car_model poppins400 fs-18"><b class="car_brand poppins700 fs-18">@car.Brand.Name</b> @car.Model</h1>
+                        <div class="car_other_info">
+                            <p class="fs-14 color-text poppins400" id="model-year">@car.ModelYear</p>
+                            <p class="delimiter fs-14 color-text poppins400">|</p>
+                            <p class="fs-14 color-text poppins400" id="model">@car.Model</p>
+                            <p class="delimiter fs-14 color-text poppins400">|</p>
+                            <p class="fs-14 color-text poppins400" id="fab-year">@car.FabYear</p>
+                        </div>
+                        <h1 class="poppins700 fs-24">@car.Price.Value.ToString("C2", CultureInfo.CurrentCulture)</h1>
+                    </div>
+                </div>
+                <div class="car_card_footer">
+                    <div class="car_card_footer_buttons">
+                        <a asp-action="Details" asp-route-id="@car.Id">
+                            <p class="btn_action_1 poppins700 fs-14 text-primary">Detalhes</p>
+                        </a>
+                        <p class="btn_action_2 poppins700 fs-14 text-secondary">Comprar</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

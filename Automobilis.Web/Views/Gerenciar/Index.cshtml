@@ -1,0 +1,81 @@
+﻿@model List<Car>
+
+@{
+    ViewData["Title"] = "Gerenciar";
+}
+
+@section Styles {
+<link href="~/css/Gerenciar/style.css" rel="stylesheet" />
+}
+
+<div class="container">
+    <div class="container_menu mt-20">
+        <h1 class="poppins700 fs-32">Carros cadastrados</h1>
+        <a asp-action="Add">
+            <img src="~/assets/icons/plus-circle.svg" />
+        </a>
+    </div>
+
+    <table class="manage_table">
+        <thead>
+            <tr>
+                <th class="poppins400 fs-24">Marca</th>
+                <th class="poppins400 fs-24">Modelo</th>
+                <th class="poppins400 fs-24">Ano de Fab.</th>
+                <th class="poppins400 fs-24">Ano do modelo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var car in Model)
+            {
+                <tr>
+                    <td class="car_brand">
+                        <img src="@car.Brand.Picture" />
+                    </td>
+                    <td class="poppins400 fs-24">@car.Model</td>
+                    <td class="poppins400 fs-24">@car.FabYear</td>
+                    <td class="poppins400 fs-24">@car.ModelYear</td>
+                    <td class="action">
+                        <a asp-action="Add" asp-route-id="@car.Id">
+                            <img src="~/assets/icons/edit.svg" />
+                        </a>
+                        <img src="~/assets/icons/trash-2.svg" onclick="HandleDelete(@car.Id)" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="full_screen_dialog" id="dialog">
+    <div class="exclude_confirm">
+        <div class="exclude_confirm_modal">
+            <h1 class="poppins700 fs-32">Atenção</h1>
+            <p class="poppins400 fs-32">Tem certeza que deseja<br />excluir o registro?</p>
+
+            <div class="btn_group">
+                <form asp-action="Delete">
+                    <input type="hidden" name="id" id="id"/>
+                    <button type="submit" class="btn_exclude btn_exclude_confirmation poppins700 fs-32" id="confirm_button">Sim</button>
+                </form>
+                <button class="btn_exclude btn_exclude_cancel poppins700 fs-32" onclick="ToggleVisible()">Não</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+
+    function ToggleVisible() {
+        let dialog = document.getElementById("dialog")
+        dialog.classList.toggle("visible")
+    }
+
+    function HandleDelete(id) {
+        // Get fullscreen_dialog and put it visible
+        ToggleVisible()
+        document.getElementById("id").value = id
+    }
+</script>
+}
