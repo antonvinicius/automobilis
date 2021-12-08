@@ -20,28 +20,35 @@ namespace Automobilis.Api.Handlers
 
         public async Task<GenericResult> Handle(AlterCarCommand command)
         {
+            // Instancia o serviço de upload de arquivos
             var fileUp = new FileUpload(_configuration);
 
+            // Checa se é uma alteração da foto
             if (command.Picture != null && command.CarId != 0)
             {
+                // Checa se a foto está no formato base64, aqui a foto foi alterada
                 if (command.CarId != 0 && !command.Picture.Contains("http"))
                 {
                     var commandPic = fileUp.UploadBase64Image(command.Picture, "automobilis");
                     command.Picture = commandPic;
                 }
             }
+            // Primeiro registro do carro com foto
             else if (command.CarId == 0 && command.Picture != null)
             {
                 var commandPic = fileUp.UploadBase64Image(command.Picture, "automobilis");
                 command.Picture = commandPic;
             }
+            // Primeiro registro do carro sem foto
             else if (command.CarId == 0 && command.Picture == null)
             {
                 command.Picture = "";
             }
 
+            // O preço vem sem casas decimais do frontend
             command.Price = command.Price / 100;
 
+            // Se é para salvar, instancia um novo carro
             if (command.CarId == 0)
             {
                 var car = new Car(
@@ -57,6 +64,7 @@ namespace Automobilis.Api.Handlers
 
                 return new GenericResult(true, "Car created successfully", car);
             }
+            // Atualizando um carro existente
             else
             {
                 var carToUpdate = await _repository.GetById(command.CarId);
